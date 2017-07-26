@@ -23,6 +23,10 @@ public class Stat {
     }
 
 
+
+
+
+
     //Overriding the previous version with ID
     public Stat(String name, int wins, int losses, Statement statement, int id) {
         this(name, wins, losses, statement);
@@ -30,13 +34,22 @@ public class Stat {
     }
 
 
-        public void Save() throws SQLException {
+
+
+
+
+
+    public void Save() throws SQLException {
         String formattedSql = String.format("INSERT INTO stats (name, wins, losses) VALUES ('%s', %s, %s)", name, wins, losses);
         // first %s needs ' ' cuz string and stuff
 
         statement.executeUpdate(formattedSql);
         //inserting info into table and saving
     }
+
+
+
+
 
 
     public void Update() throws SQLException {
@@ -50,6 +63,10 @@ public class Stat {
         statement.executeUpdate(formattedSql);
 
     }
+
+
+
+
 
     public static List<Stat> findAll(DatabaseManger dbm) throws SQLException {
         ResultSet rs = dbm.findAll("stats");
@@ -69,13 +86,46 @@ public class Stat {
             //createing a way to add new entry's quickly
             //had to add rs.getINT id to get the id so we can update independent from others
 
-//
-// System.out.printf("%s %s %s", name, wins, losses);
-//print f lets us print varibles with (%s, var name)
+            //
+            // System.out.printf("%s %s %s", name, wins, losses);
+            //print f lets us print varibles with (%s, var name)
         }
         return tempCollection;
     }
 
+
+
+
+
+
+    public static Stat findByName(DatabaseManger dbm, Statement statement, String currentName) throws SQLException {
+        String formattedSql = String.format("SELECT * FROM stats WHERE name = '%s'", currentName);
+        ResultSet rs = statement.executeQuery(formattedSql);
+        List<Stat> tempCollection = new ArrayList<>();
+        Statement tempStatement = dbm.getStatement();
+
+        while (rs.next()) {
+
+            String name = rs.getString("name");
+            int wins = rs.getInt("wins");
+            int losses = rs.getInt("losses");
+
+
+            Stat tempStat = new Stat(name, wins, losses, tempStatement, rs.getInt("id"));
+            tempCollection.add(tempStat);
+        }
+        if (tempCollection.size() != 0) {
+            return tempCollection.get(0);
+        } else {
+            return null;
+        }
+    }
+
+
+
+
+
+    //set everything so we can rewrite
     public void setId(int id) {
         this.id = id;
     }

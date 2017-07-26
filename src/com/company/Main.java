@@ -18,15 +18,20 @@ public class Main {
             //text for class has use building a dummy table to play around with check there
 
 
-            WelcomeMenu();//down below calling 
 
-        } catch (SQLException ex) {//to keep the error from URL ^^^^^
+            //created database
+            DatabaseManger dbm = new DatabaseManger(connection);
+            WelcomeMenu(dbm);//down below calling
+
+
+
+        }catch (SQLException ex) {//to keep the error from URL ^^^^^
             System.out.println("something went wrong");
             ex.printStackTrace();
         }
     }
 
-    public static void WelcomeMenu() {
+    public static void WelcomeMenu(DatabaseManger dbm) throws SQLException {
         //limiting users options
         System.out.println("=========================================================");
         System.out.println("Welcome to Stat Database 3000. What would you like to do?");
@@ -43,17 +48,50 @@ public class Main {
         switch (choice){
             case 1:
                 System.out.println("now showing all stats");
+                List<Stat> results = Stat.findAll(dbm);
+                for (Stat stat : results){
+                    System.out.println(stat);
+                }
                 break;
+
             case 2:
-                System.out.println("tell me some info about your stat person thing");
+                System.out.println("players name");
+                String name = scanner.next();
+                System.out.println("how many wins");
+                int wins = scanner.nextInt();
+                System.out.println("how many losses");
+                int losses = scanner.nextInt();
+                //saving all the info
+                new Stat(name, wins, losses, dbm.getStatement()).Save();
                 break;
+
             case 3:
                 System.out.println("Which player name would you like to update");
+                String currentName = scanner.next();
+                Stat searchName = Stat.findByName(dbm, dbm.getStatement(), currentName);
+
+                if (searchName == null) {
+                    System.out.println("not in the system");
+                    WelcomeMenu(dbm);
+                }
+                System.out.println("players new name?");
+                String newName = scanner.next();
+                System.out.println("new wins?");
+                int newWins = scanner.nextInt();
+                System.out.println("new losses?");
+                int newLosses = scanner.nextInt();
+
+                searchName.setName(newName);
+                searchName.setWins(newWins);
+                searchName.setLosses(newLosses);
+                searchName.Update();
+                System.out.println("entry updated");
+
                 break;
             default:
                 System.out.println("invalid input");
         }
-        WelcomeMenu();
+        WelcomeMenu(dbm);
     }
 }
 
