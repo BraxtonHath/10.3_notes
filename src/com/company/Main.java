@@ -1,6 +1,11 @@
 package com.company;
 
+import com.company.Helpers.DatabaseManger;
+import com.company.Model.Stat;
+
 import java.sql.*;
+import java.util.List;
+import java.util.Scanner;
 
 public class Main {
 
@@ -10,37 +15,45 @@ public class Main {
 
 
         try(Connection connection = DriverManager.getConnection("jdbc:sqlite:stats.db")) {// creating DB not Table
-
-            Statement statement = connection.createStatement();
-
-            statement.executeUpdate("DROP TABLE IF EXISTS stats");// deletes tables for Test
-
-            statement.executeUpdate("CREATE TABLE stats (id INTEGER PRIMARY KEY, name String, wins INTEGER, losses INTEGER)");
-            //making a table to for the testing
-
-            statement.executeUpdate("INSERT INTO stats (name, wins, losses) VALUES ('Joel', 10, 2)");
-            //inserting info into table
-
-            ResultSet rs = statement.executeQuery("SELECT * FROM stats");
-            //result sets giving info one row at a time
+            //text for class has use building a dummy table to play around with check there
 
 
-            while (rs.next()) {
+            WelcomeMenu();//down below calling 
 
-                String name = rs.getString("name");
-
-                int wins = rs.getInt("wins");
-
-                int losses = rs.getInt("losses");
-                //printing out all the lines of info to check colume data
-
-                System.out.printf("%s %s %s", name, wins, losses);
-                        //print f lets us print varibles with (%s, var name)
-            }
-
-
-	    } catch (SQLException ex){//to keep the error from URL ^^^^^
+        } catch (SQLException ex) {//to keep the error from URL ^^^^^
             System.out.println("something went wrong");
+            ex.printStackTrace();
         }
     }
+
+    public static void WelcomeMenu() {
+        //limiting users options
+        System.out.println("=========================================================");
+        System.out.println("Welcome to Stat Database 3000. What would you like to do?");
+        System.out.println("1) Show All Stats");
+        System.out.println("2) Add a new Stat");
+        System.out.println("3) Update an Existing Stat");
+        System.out.println("=========================================================");
+
+        //take the users input for switch
+        Scanner scanner = new Scanner(System.in);
+        int choice = scanner.nextInt();
+
+        //filters thru user inputs and does so and so if blank
+        switch (choice){
+            case 1:
+                System.out.println("now showing all stats");
+                break;
+            case 2:
+                System.out.println("tell me some info about your stat person thing");
+                break;
+            case 3:
+                System.out.println("Which player name would you like to update");
+                break;
+            default:
+                System.out.println("invalid input");
+        }
+        WelcomeMenu();
+    }
 }
+
